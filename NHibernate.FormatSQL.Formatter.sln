@@ -1,0 +1,34 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 2013
+VisualStudioVersion = 12.0.31101.0
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NHibernate.FormatSQL.Formatter", "NHibernate.FormatSQL.Formatter\NHibernate.FormatSQL.Formatter.csproj", "{2EE2D951-3A44-4645-8FAE-4257EB3504F1}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NHibernate.FormatSQL.Formatter.Tests", "NHibernate.FormatSQL.Formatter.Tests\NHibernate.FormatSQL.Formatter.Tests.csproj", "{3A882031-C09D-476B-A2BB-CBFB21410877}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NHibernate.FormatSQL.Console", "NHibernate.FormatSQL.Console\NHibernate.FormatSQL.Console.csproj", "{0B51CCE1-B98B-4D90-82D4-77028725A892}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{2EE2D951-3A44-4645-8FAE-4257EB3504F1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2EE2D951-3A44-4645-8FAE-4257EB3504F1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2EE2D951-3A44-4645-8FAE-4257EB3504F1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2EE2D951-3A44-4645-8FAE-4257EB3504F1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3A882031-C09D-476B-A2BB-CBFB21410877}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3A882031-C09D-476B-A2BB-CBFB21410877}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3A882031-C09D-476B-A2BB-CBFB21410877}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3A882031-C09D-476B-A2BB-CBFB21410877}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0B51CCE1-B98B-4D90-82D4-77028725A892}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0B51CCE1-B98B-4D90-82D4-77028725A892}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0B51CCE1-B98B-4D90-82D4-77028725A892}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0B51CCE1-B98B-4D90-82D4-77028725A892}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

@@ -42,16 +42,16 @@ namespace NHibernate.FormatSQL.Console
                 StringBuilder messageBuilder = new StringBuilder();
                 showHelp(input);
                 input = System.Console.ReadLine();
-
+                
                 bool valid = true;
                 string message = string.Empty;
                 string command = tryGetSettings(input, out valid, out message);
                 if (valid) setupFiles(consoleOptions.WorkingDirectory, false);
-                if (valid && Directory.Exists(consoleOptions.WorkingDirectory))
+                if (valid && Directory.Exists(consoleOptions.WorkingDirectory)) 
                 {
                     input = command;
                     trySaveSettings();
-
+                    
                     if (input.ToLower().Trim() == "view-settings")
                     {
                         tryShowSetting();
@@ -188,20 +188,23 @@ namespace NHibernate.FormatSQL.Console
                 showHeader();
                 StringBuilder helpbuilder = new StringBuilder();
                 helpbuilder.AppendLine("");
-                helpbuilder.AppendLine("Enter --work-dir  E.G. C:\\users\\<your_name>\\documents\\nhibernate");
-                helpbuilder.AppendLine("Enter --mode ( 1 = FSI < v13 ), ( 2 = FSI >= v13 ), ( 3 = LINQPad )");
+                helpbuilder.AppendLine("Enter --work-dir  E.G. C:\\users\\<your_name>\\documents\\nhibernate\n");
+                helpbuilder.AppendLine("Enter --mode ( 1 = FSI < v13 )");
+                helpbuilder.AppendLine("             ( 2 = FSI >= v13 )");
+                helpbuilder.AppendLine("             ( 3 = LINQPad )");
+                helpbuilder.AppendLine("             ( 4 = V13 AELTC Members )\n");
                 helpbuilder.AppendLine("Enter exit or e to exit application");
                 helpbuilder.AppendLine("");
                 helpbuilder.AppendLine("---------");
-                helpbuilder.AppendLine("<Example> : start minitor and set settings and save settings");
+                helpbuilder.AppendLine("<Example> : start monitor and set settings and save settings");
                 helpbuilder.AppendLine("---------");
-                helpbuilder.AppendLine("monitor-start --work-dir <working directory> --mode <1,2,3>");
+                helpbuilder.AppendLine("monitor-start --work-dir <working directory> --mode <1,2,3,4>");
                 helpbuilder.AppendLine("");
                 //helpbuilder.AppendLine("");
                 helpbuilder.AppendLine("---------");
                 helpbuilder.AppendLine("<Example> : set and save settings");
                 helpbuilder.AppendLine("---------");
-                helpbuilder.AppendLine("--work-dir <working directory> --mode <1,2,3>");
+                helpbuilder.AppendLine("--work-dir <working directory> --mode <1,2,3,4>");
                 helpbuilder.AppendLine("");
                 //helpbuilder.AppendLine("");
                 helpbuilder.AppendLine("---------");
@@ -328,31 +331,31 @@ namespace NHibernate.FormatSQL.Console
                                 if (string.IsNullOrWhiteSpace(value[1]))
                                 {
                                     valid = false;
-                                    builder.AppendLine("work-dir must contain a value. E.g. --work-dir c:\\mydir");
+                                    builder.AppendLine( "work-dir must contain a value. E.g. --work-dir c:\\mydir" );
                                 }
                                 else
                                 {
                                     consoleOptions.WorkingDirectory = value[1];
-                                    builder.AppendLine(string.Format("work-dir successfully set to <{0}>", value[1]));
+                                    builder.AppendLine( string.Format("work-dir successfully set to <{0}>", value[1]) );
                                 }
                                 break;
                             case "mode":
                                 // ( valid mode ) 
-                                if (value.Length > 1 && value[1].Length == 1 && ("1 2 3".ToList().Contains(Convert.ToChar(value[1]))))
+                                if (value.Length > 1 && value[1].Length == 1 && ("1 2 3 4".ToList().Contains(Convert.ToChar(value[1]))))
                                 {
                                     consoleOptions.Mode = value[1];
-                                    builder.AppendLine(string.Format("Mode successfully set to <{0}>", value[1]));
+                                    builder.AppendLine( string.Format("Mode successfully set to <{0}>", value[1]) );
                                 }
                                 else
                                 {
                                     valid = false;
                                     if (string.IsNullOrWhiteSpace(value[1]))
                                     {
-                                        builder.AppendLine("Mode must contain a value. E.g. --mode 1");
+                                        builder.AppendLine( "Mode must contain a value. E.g. --mode 1" );
                                     }
                                     else
                                     {
-                                        builder.AppendLine(string.Format("<{0}> is not a valid mode", value[1]));
+                                        builder.AppendLine( string.Format("<{0}> is not a valid mode", value[1]) );
                                     }
                                 }
                                 break;
@@ -363,11 +366,11 @@ namespace NHibernate.FormatSQL.Console
                                     valid = false;
                                     if (string.IsNullOrWhiteSpace(value[1]))
                                     {
-                                        builder.AppendLine("Open must contain a value. E.g. --open [input], [output], [error], [dir]");
+                                        builder.AppendLine(  "Open must contain a value. E.g. --open [input], [output], [error], [dir]" );
                                     }
                                     else
                                     {
-                                        builder.AppendLine(string.Format("<{0}> is not a valid Open parameter", value[1]));
+                                        builder.AppendLine( string.Format("<{0}> is not a valid Open parameter", value[1]) );
                                     }
                                 }
                                 else
@@ -393,7 +396,7 @@ namespace NHibernate.FormatSQL.Console
                                 }
                                 break;
                             default:
-                                builder.AppendLine(string.Format("Unrecognised sequence used. <{0}> is not a recognized command.", input));
+                                builder.AppendLine( string.Format("Unrecognised sequence used. <{0}> is not a recognized command.", input) );
                                 valid = false;
                                 break;
                         }
@@ -403,7 +406,7 @@ namespace NHibernate.FormatSQL.Console
                         if (!value[0].Contains("help") && !value[0].Contains("view-settings") && !value[0].Contains("monitor-start") && !value[0].Contains("monitor-stop"))
                         {
                             valid = false;
-                            builder.AppendLine("Commands must contain values. E.g. --command value ( --mode 1 )");
+                            builder.AppendLine( "Commands must contain values. E.g. --command value ( --mode 1 )" );
                         }
                     }
                 }
@@ -452,6 +455,9 @@ namespace NHibernate.FormatSQL.Console
                     case "3":
                         description = "( 3 = LINQPad )";
                         break;
+                    case "4":
+                        description = "( 4 = V13 AELTC Members )";
+                        break;
                 }
 
                 System.Console.WriteLine("mode {0} = {1} {2}", "".PadRight(3), consoleOptions.Mode, description);
@@ -468,7 +474,6 @@ namespace NHibernate.FormatSQL.Console
             {
                 System.Console.WriteLine("");
                 System.Console.WriteLine(input);
-                //System.Console.WriteLine("");
             }
             if (monitorStarted)
             {
@@ -500,17 +505,22 @@ namespace NHibernate.FormatSQL.Console
                     taskMessage.AppendLine(string.Format("Mode set to <{0}>", consoleOptions.Mode));
                     switch (consoleOptions.Mode)
                     {
-                        case "1":
+                        case "1": // < V13
                             nhibernateFormatter = new NHibernateSqlOutputFormatter();
                             nhibernateFormatter.SqlIdentifiers = new string[] { "NHibernate.SQL:", Environment.NewLine };
                             break;
-                        case "2":
+                        case "2": // V13 
                             nhibernateFormatter = new NHibernateSqlOutputFormatter();
-                            nhibernateFormatter.SqlIdentifiers = new string[] { "NHibernate.SQL:", "\'w3wp.exe\'" };
+                            nhibernateFormatter.SqlIdentifiers = new string[] { "NHibernate.SQL:", "\'w3wp.exe\'", Environment.NewLine };
+                            nhibernateFormatter.IgnoreFilters = new string[] { "NHibernate.Hql.Ast.ANTLR.HqlSqlWalker", "NHibernate.Hql.Ast.ANTLR.HqlSqlGenerator", "NHibernate.AdoNet.AbstractBatcher", "NHibernate.Loader.Loader" };
                             break;
-                        case "3":
+                        case "3": // LinqPad 
                             nhibernateFormatter = new NHibernateSqlOutputFormatter();
                             nhibernateFormatter.SqlIdentifiers = new string[] { "-- EndRegion" };
+                            break;
+                        case "4": // Members V13 
+                            nhibernateFormatter = new NHibernateSqlOutputFormatter();
+                            nhibernateFormatter.SqlIdentifiers = new string[] { "NHibernate.SQL:", "\'w3wp.exe\'" };
                             break;
                         default:
                             nhibernateFormatter = new NHibernateSqlOutputFormatter();
@@ -518,14 +528,17 @@ namespace NHibernate.FormatSQL.Console
                     }
 
                     bool containErrors = false;
+                    string appliedFormattedSql = string.Empty;
                     IList<ISqlStatement> sqlStatements = nhibernateFormatter.GetSqlFromDebugOutput(File.ReadAllText(Path.Combine(consoleOptions.WorkingDirectory, inputFileName)));
                     foreach (var sqlStatement in sqlStatements)
                     {
-                        if (sqlStatement is SqlSelectStatement)
+                        //if (sqlStatement is SqlSelectStatement)
                         {
-                            string appliedFormattedSql = sqlStatement.ApplySuggestedFormat();
-                            using (StreamWriter streamWriter = outputFile.AppendText())
-                                streamWriter.WriteLine(appliedFormattedSql);
+                            appliedFormattedSql = sqlStatement.ApplySuggestedFormat();
+                            if (sqlStatement is SqlUpdateStatement || sqlStatement is SqlInsertStatement)
+                            {
+                                appliedFormattedSql = appliedFormattedSql.InsertBetween("/*", "*/");
+                            }
 
                             // Log any handled exceptions (these are exceptions that dont break the iteration of creating SQL statements).
                             if (sqlStatement.SqlStatementParsingException != null)
@@ -533,6 +546,9 @@ namespace NHibernate.FormatSQL.Console
                                 containErrors = true;
                                 logErrorMessage(sqlStatement.SqlStatementParsingException, (SqlSelectStatement)sqlStatement);
                             }
+                            else
+                                using (StreamWriter streamWriter = outputFile.AppendText())
+                                    streamWriter.WriteLine(appliedFormattedSql);
                         }
                     }
 
@@ -562,7 +578,7 @@ namespace NHibernate.FormatSQL.Console
             }
             finally
             {
-                // hack for file system watcher firing unecessary events
+                // hack for file system watcher firing unnecessary events
                 fileMonitor.EnableRaisingEvents = true;
                 writeMessage(taskMessage.ToString());
             }

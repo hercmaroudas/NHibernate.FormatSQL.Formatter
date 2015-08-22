@@ -10,6 +10,9 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NHibernate.FormatSQL.Console", "NHibernate.FormatSQL.Console\NHibernate.FormatSQL.Console.csproj", "{0B51CCE1-B98B-4D90-82D4-77028725A892}"
 EndProject
 Global
+	GlobalSection(CodealikeProperties) = postSolution
+		SolutionGuid = efa14710-0e42-4bcc-b85c-2dc5c9b1f34f
+	EndGlobalSection
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
 		Release|Any CPU = Release|Any CPU

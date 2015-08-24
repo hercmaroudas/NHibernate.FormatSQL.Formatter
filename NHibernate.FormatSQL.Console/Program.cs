@@ -71,7 +71,7 @@ namespace NHibernate.FormatSQL.Console
                     }
                     else
                     {
-                        if (!string.IsNullOrWhiteSpace(input) && !input.Contains("mode") && !input.Contains("work-dir") && !input.Contains("help") && !input.Contains("open") && !input.Contains("error") && !input.Contains("dir"))
+                        if (!string.IsNullOrWhiteSpace(input) && !input.Contains("safe-mode") && !input.Contains("mode") && !input.Contains("work-dir") && !input.Contains("help") && !input.Contains("open") && !input.Contains("error") && !input.Contains("dir"))
                         {
                             writeMessage(string.Format("Incorrect sequence used. <{0}> is not a recognized command.", input));
                             System.Console.WriteLine();
@@ -97,7 +97,10 @@ namespace NHibernate.FormatSQL.Console
                         messageBuilder.AppendLine(message);
                         messageBuilder.AppendLine();
                     }
-                    messageBuilder.AppendLine("Please add a valid working directory <work-dir> and mode <mode> to continue.");
+                    else
+                    {
+                        messageBuilder.AppendLine("Please add a valid working directory <work-dir> and mode <mode> to continue.");
+                    }
                     writeMessage(messageBuilder.ToString());
                 }
             }
@@ -105,8 +108,6 @@ namespace NHibernate.FormatSQL.Console
         static void initializeConsole()
         {
             System.Console.Title = "NHibernate Sql Output Formatter";
-            System.Console.WindowHeight = 28;
-            System.Console.WindowWidth = 80;
         }
         static bool canContinue(string input)
         {
@@ -128,7 +129,7 @@ namespace NHibernate.FormatSQL.Console
             {
                 message.AppendLine("<Monitoring Active>");
                 message.AppendLine();
-                message.AppendLine(string.Format("Monitoring input file using mode <{0}>...\n\nInput file <{1}>", consoleOptions.Mode, Path.Combine(consoleOptions.WorkingDirectory, inputFileName)));
+                message.AppendLine(string.Format("Monitoring input file using mode <{0}>...\n\nInput file <{1}>...\n\nSafe Mode <{2}>", consoleOptions.Mode, Path.Combine(consoleOptions.WorkingDirectory, inputFileName), consoleOptions.SafeMode));
                 message.AppendLine();
                 message.AppendLine("1. Copy the NHibernate unformatted SQL to the input file and click save.");
                 message.AppendLine("2. Get the latest output file with the formatted SQL.");
@@ -193,18 +194,19 @@ namespace NHibernate.FormatSQL.Console
                 helpbuilder.AppendLine("             ( 2 = FSI >= v13 )");
                 helpbuilder.AppendLine("             ( 3 = LINQPad )");
                 helpbuilder.AppendLine("             ( 4 = V13 AELTC Members )\n");
+                helpbuilder.AppendLine("Enter --safe-mode on\\off \n");
                 helpbuilder.AppendLine("Enter exit or e to exit application");
                 helpbuilder.AppendLine("");
                 helpbuilder.AppendLine("---------");
                 helpbuilder.AppendLine("<Example> : start monitor and set settings and save settings");
                 helpbuilder.AppendLine("---------");
-                helpbuilder.AppendLine("monitor-start --work-dir <working directory> --mode <1,2,3,4>");
+                helpbuilder.AppendLine("monitor-start --work-dir <working directory> --mode <1,2,3,4> --safe-mode <on, off>");
                 helpbuilder.AppendLine("");
                 //helpbuilder.AppendLine("");
                 helpbuilder.AppendLine("---------");
                 helpbuilder.AppendLine("<Example> : set and save settings");
                 helpbuilder.AppendLine("---------");
-                helpbuilder.AppendLine("--work-dir <working directory> --mode <1,2,3,4>");
+                helpbuilder.AppendLine("--work-dir <working directory> --mode <1,2,3,4> --safe-mode <on, off>");
                 helpbuilder.AppendLine("");
                 //helpbuilder.AppendLine("");
                 helpbuilder.AppendLine("---------");
@@ -308,6 +310,7 @@ namespace NHibernate.FormatSQL.Console
             consoleOptions.WorkingDirectory = ConsoleApp.Default.WorkPath;
             setupMonitoring(consoleOptions.WorkingDirectory);
             consoleOptions.Mode = ConsoleApp.Default.Mode;
+            consoleOptions.SafeMode = ConsoleApp.Default.SafeMode;
         }
         static string tryGetSettings(string input, out bool valid, out string message)
         {
@@ -327,6 +330,18 @@ namespace NHibernate.FormatSQL.Console
                     {
                         switch (value[0])
                         {
+                            case "safe-mode":
+                                if (value.Length > 1 && (value[1] == "on" || value[1] == "off"))
+                                {
+                                    consoleOptions.SafeMode = value[1];
+                                    builder.AppendLine(string.Format("safe-mode successfully set to <{0}>", value[1]));
+                                }
+                                else 
+                                {
+                                    valid = false;
+                                    builder.AppendLine("safe-mode must contain a value. E.g. --safe-mode on or --safe-mode off");
+                                }
+                                break;
                             case "work-dir":
                                 if (string.IsNullOrWhiteSpace(value[1]))
                                 {
@@ -420,6 +435,7 @@ namespace NHibernate.FormatSQL.Console
             setupMonitoring(consoleOptions.WorkingDirectory);
 
             ConsoleApp.Default.Mode = consoleOptions.Mode;
+            ConsoleApp.Default.SafeMode = consoleOptions.SafeMode;
             ConsoleApp.Default.Save();
         }
         static void tryShowSetting()
@@ -428,6 +444,18 @@ namespace NHibernate.FormatSQL.Console
             System.Console.Clear();
             showHeader();
             System.Console.WriteLine();
+
+            // ( safe mode )
+            if (string.IsNullOrWhiteSpace(consoleOptions.SafeMode))
+            {
+                System.Console.WriteLine("safe-mode = {0}", "<no setting>");
+            }
+            else
+            {
+                System.Console.WriteLine("safe-mode = {0}", consoleOptions.SafeMode);
+            }
+
+            // ( work directory )
             if (string.IsNullOrWhiteSpace(consoleOptions.WorkingDirectory))
             {
                 System.Console.WriteLine("work-dir = {0}", "<no setting>");
@@ -437,6 +465,7 @@ namespace NHibernate.FormatSQL.Console
                 System.Console.WriteLine("work-dir = {0}", consoleOptions.WorkingDirectory);
             }
 
+            // ( mode )
             if (string.IsNullOrWhiteSpace(consoleOptions.Mode))
             {
                 System.Console.WriteLine("mode {0} = {1}", "".PadRight(3), "<no setting>");
@@ -532,24 +561,24 @@ namespace NHibernate.FormatSQL.Console
                     IList<ISqlStatement> sqlStatements = nhibernateFormatter.GetSqlFromDebugOutput(File.ReadAllText(Path.Combine(consoleOptions.WorkingDirectory, inputFileName)));
                     foreach (var sqlStatement in sqlStatements)
                     {
-                        //if (sqlStatement is SqlSelectStatement)
+                        appliedFormattedSql = sqlStatement.ApplySuggestedFormat();
+                        if ((sqlStatement is SqlUpdateStatement || sqlStatement is SqlInsertStatement) && consoleOptions.SafeMode.ToLower() == "on")
                         {
-                            appliedFormattedSql = sqlStatement.ApplySuggestedFormat();
-                            if (sqlStatement is SqlUpdateStatement || sqlStatement is SqlInsertStatement)
-                            {
-                                appliedFormattedSql = appliedFormattedSql.InsertBetween("/*", "*/");
-                            }
-
-                            // Log any handled exceptions (these are exceptions that dont break the iteration of creating SQL statements).
-                            if (sqlStatement.SqlStatementParsingException != null)
-                            {
-                                containErrors = true;
-                                logErrorMessage(sqlStatement.SqlStatementParsingException, (SqlSelectStatement)sqlStatement);
-                            }
-                            else
-                                using (StreamWriter streamWriter = outputFile.AppendText())
-                                    streamWriter.WriteLine(appliedFormattedSql);
+                            appliedFormattedSql = appliedFormattedSql.InsertBetween("/*", "*/");
                         }
+
+                        // Log any handled exceptions (these are exceptions that dont break the iteration of creating SQL statements).
+                        if (sqlStatement.SqlStatementParsingException != null)
+                        {
+                            containErrors = true;
+                            logErrorMessage(sqlStatement.SqlStatementParsingException, (SqlSelectStatement)sqlStatement);
+                        }
+                        else
+                            using (StreamWriter streamWriter = outputFile.AppendText()) 
+                            {
+                                streamWriter.WriteLine(appliedFormattedSql);
+                                streamWriter.WriteLine("");
+                            }
                     }
 
                     if (containErrors)
@@ -587,6 +616,7 @@ namespace NHibernate.FormatSQL.Console
         {
             public string Mode { get; set; }
             public string WorkingDirectory { get; set; }
+            public string SafeMode { get; set; }
         }
     }
 }

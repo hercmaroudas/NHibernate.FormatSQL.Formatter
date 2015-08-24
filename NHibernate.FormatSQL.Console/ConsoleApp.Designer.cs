@@ -46,5 +46,17 @@ namespace NHibernate.FormatSQL.Console {
                 this["Mode"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("On")]
+        public string SafeMode {
+            get {
+                return ((string)(this["SafeMode"]));
+            }
+            set {
+                this["SafeMode"] = value;
+            }
+        }
     }
 }
